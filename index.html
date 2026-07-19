@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>I Trigger You - Troll Platformer</title>
+    <!-- Google Fonts for Retro/Cartoon feeling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Game Canvas -->
+        <canvas id="game-canvas" width="960" height="540"></canvas>
+
+        <!-- HUD Overlay -->
+        <div id="hud" class="ui-screen hidden">
+            <div class="hud-left">
+                <div class="hud-item">LEVEL: <span id="hud-level">1</span></div>
+                <div class="hud-item">DEATHS: <span id="hud-deaths">0</span></div>
+            </div>
+            <div class="hud-center">
+                <div class="rage-meter-container">
+                    <div class="rage-label">RAGE METER</div>
+                    <div class="rage-bar-outer">
+                        <div id="rage-bar-inner"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="hud-right">
+                <div class="hud-item">TIME: <span id="hud-timer">00:00.00</span></div>
+                <button id="hud-pause-btn" class="icon-btn">II</button>
+            </div>
+        </div>
+
+        <!-- Screens -->
+        <!-- Main Menu -->
+        <div id="main-menu" class="ui-screen active-screen">
+            <h1 class="game-title">I TRIGGER<br><span class="highlight">YOU</span></h1>
+            <p class="subtitle">The ultimate unfair experience</p>
+            <div class="menu-buttons">
+                <button id="btn-play" class="menu-btn primary-btn">PLAY GAME</button>
+                <button id="btn-level-select" class="menu-btn">SELECT LEVEL</button>
+                <button id="btn-settings" class="menu-btn">SETTINGS</button>
+                <button id="btn-achievements" class="menu-btn">ACHIEVEMENTS</button>
+                <button id="btn-credits" class="menu-btn">CREDITS</button>
+            </div>
+        </div>
+
+        <!-- Level Select Menu -->
+        <div id="level-select-menu" class="ui-screen hidden">
+            <button class="back-btn" id="btn-level-back">&larr; BACK</button>
+            <h2>SELECT LEVEL</h2>
+            <div class="level-grid-container">
+                <div id="level-grid" class="level-grid">
+                    <!-- Javascript will generate levels here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Menu -->
+        <div id="settings-menu" class="ui-screen hidden">
+            <button class="back-btn" id="btn-settings-back">&larr; BACK</button>
+            <h2>SETTINGS</h2>
+            <div class="settings-list">
+                <div class="setting-item">
+                    <label for="slider-music">Music Volume</label>
+                    <input type="range" id="slider-music" min="0" max="100" value="70">
+                </div>
+                <div class="setting-item">
+                    <label for="slider-sfx">SFX Volume</label>
+                    <input type="range" id="slider-sfx" min="0" max="100" value="80">
+                </div>
+                <div class="setting-item checkbox-item">
+                    <label for="check-shake">Screen Shake</label>
+                    <input type="checkbox" id="check-shake" checked>
+                </div>
+                <div class="setting-item checkbox-item">
+                    <label for="check-fullscreen">Full Screen</label>
+                    <input type="checkbox" id="check-fullscreen">
+                </div>
+                <button id="btn-reset-data" class="danger-btn">RESET SAVE DATA</button>
+            </div>
+        </div>
+
+        <!-- Achievements Menu -->
+        <div id="achievements-menu" class="ui-screen hidden">
+            <button class="back-btn" id="btn-achievements-back">&larr; BACK</button>
+            <h2>ACHIEVEMENTS</h2>
+            <div id="achievements-list" class="achievements-list">
+                <!-- Javascript will generate achievements here -->
+            </div>
+        </div>
+
+        <!-- Credits Menu -->
+        <div id="credits-menu" class="ui-screen hidden">
+            <button class="back-btn" id="btn-credits-back">&larr; BACK</button>
+            <h2>CREDITS</h2>
+            <div class="credits-content">
+                <p class="credits-header">Developer / Troll Master</p>
+                <p class="credits-name">Antigravity AI & Google Deepmind</p>
+                <br>
+                <p class="credits-header">Game Engine</p>
+                <p class="credits-name">Vanilla HTML5 Canvas & Web Audio API</p>
+                <br>
+                <p class="credits-header">Special Thanks</p>
+                <p class="credits-name">To the player (for not breaking their screen)</p>
+                <p class="credits-name">And the keyboard makers of the world</p>
+            </div>
+        </div>
+
+        <!-- Pause Menu -->
+        <div id="pause-screen" class="ui-screen hidden overlay-screen">
+            <h2>GAME PAUSED</h2>
+            <div class="menu-buttons">
+                <button id="btn-resume" class="menu-btn primary-btn">RESUME</button>
+                <button id="btn-pause-settings" class="menu-btn">SETTINGS</button>
+                <button id="btn-pause-restart" class="menu-btn danger-btn">RESTART LEVEL</button>
+                <button id="btn-pause-quit" class="menu-btn">QUIT TO MENU</button>
+            </div>
+        </div>
+
+        <!-- Fake Screens -->
+        <!-- Fake Loading Screen -->
+        <div id="fake-loading-screen" class="ui-screen hidden overlay-screen black-bg">
+            <div class="spinner"></div>
+            <div class="loading-text">LOADING GAME ASSETS... 99%</div>
+            <div class="loading-subtext">Calculating level unfairness...</div>
+        </div>
+
+        <!-- Fake Game Over Screen -->
+        <div id="fake-game-over-screen" class="ui-screen hidden overlay-screen black-bg">
+            <h1 class="game-over-title">GAME OVER</h1>
+            <p id="fake-game-over-msg" class="death-message">"You thought this was real?"</p>
+            <button id="btn-fake-go-respawn" class="menu-btn primary-btn">RESPAWN</button>
+        </div>
+
+        <!-- Fake Level Complete Screen -->
+        <div id="fake-level-complete-screen" class="ui-screen hidden overlay-screen blue-bg">
+            <h1 class="complete-title">LEVEL COMPLETE!</h1>
+            <p class="complete-sub">You did it! Absolutely flawless!</p>
+            <button id="btn-fake-lc-continue" class="menu-btn primary-btn">CONTINUE TO NEXT LEVEL</button>
+        </div>
+
+        <!-- Real Game Over / Respawn Overlay (Fades out quickly on respawn) -->
+        <div id="death-overlay" class="ui-screen hidden overlay-screen red-bg">
+            <h1 class="death-title">WASTED</h1>
+            <p id="death-msg" class="death-message">"Got You!"</p>
+        </div>
+
+        <!-- Mobile Controls Overlay (only visible on mobile devices) -->
+        <div id="mobile-controls" class="hidden">
+            <div class="dpad-container">
+                <button id="btn-m-left" class="m-btn">◀</button>
+                <button id="btn-m-right" class="m-btn">▶</button>
+            </div>
+            <div class="action-container">
+                <button id="btn-m-dash" class="m-btn-action">DASH</button>
+                <button id="btn-m-jump" class="m-btn-action">JUMP</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts in execution dependency order -->
+    <script src="js/audio.js"></script>
+    <script src="js/input.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/entities.js"></script>
+    <script src="js/bosses.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/engine.js"></script>
+</body>
+</html>

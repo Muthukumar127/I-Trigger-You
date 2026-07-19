@@ -46,6 +46,7 @@ const GameUI = {
             AudioSystem.resume();
             this.showScreen('hud');
             Engine.startLevel(this.maxUnlockedLevel);
+            this.toggleFullscreen(true); // Auto Fullscreen
         });
 
         document.getElementById('btn-level-select').addEventListener('click', () => {
@@ -251,6 +252,7 @@ const GameUI = {
                 item.addEventListener('click', () => {
                     this.showScreen('hud');
                     Engine.startLevel(i);
+                    this.toggleFullscreen(true); // Auto Fullscreen
                 });
             } else {
                 item.classList.add('locked');

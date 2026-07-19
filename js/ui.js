@@ -27,6 +27,17 @@ const GameUI = {
         this.setupEventListeners();
         this.generateLevelGrid();
         this.renderAchievementsList();
+
+        // Listen for document fullscreen state changes to synchronize HUD button and Settings checkbox
+        document.addEventListener('fullscreenchange', () => {
+            const isFS = !!document.fullscreenElement;
+            const check = document.getElementById('check-fullscreen');
+            if (check) check.checked = isFS;
+            const btn = document.getElementById('hud-fullscreen-btn');
+            if (btn) {
+                btn.textContent = isFS ? '🗗' : '⛶';
+            }
+        });
     },
 
     setupEventListeners() {
@@ -115,6 +126,14 @@ const GameUI = {
             this.toggleFullscreen(e.target.checked);
         });
 
+        const hudFsBtn = document.getElementById('hud-fullscreen-btn');
+        if (hudFsBtn) {
+            hudFsBtn.addEventListener('click', () => {
+                const isFS = !!document.fullscreenElement;
+                this.toggleFullscreen(!isFS);
+            });
+        }
+
         document.getElementById('btn-reset-data').addEventListener('click', () => {
             if (confirm("Are you sure you want to clear your rage and level progress?")) {
                 localStorage.clear();
@@ -179,18 +198,28 @@ const GameUI = {
     toggleFullscreen(enable) {
         const container = document.getElementById('game-container');
         if (enable) {
-            if (container.requestFullscreen) {
-                container.requestFullscreen();
-            } else if (container.webkitRequestFullscreen) {
-                container.webkitRequestFullscreen();
-            } else if (container.msRequestFullscreen) {
-                container.msRequestFullscreen();
+            const requestFS = container.requestFullscreen || container.webkitRequestFullscreen || container.msRequestFullscreen;
+            if (requestFS) {
+                requestFS.call(container).then(() => {
+                    // Try to lock orientation to landscape on mobile
+                    if (screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('landscape').catch((err) => {
+                            console.warn("Screen orientation lock failed:", err);
+                        });
+                    }
+                }).catch((err) => {
+                    console.error("Fullscreen request failed:", err);
+                });
             }
         } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
+            const exitFS = document.exitFullscreen || document.webkitExitFullscreen;
+            if (exitFS) {
+                exitFS.call(document);
+                if (screen.orientation && screen.orientation.unlock) {
+                    try {
+                        screen.orientation.unlock();
+                    } catch(e) {}
+                }
             }
         }
     },

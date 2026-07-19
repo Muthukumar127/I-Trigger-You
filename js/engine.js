@@ -314,8 +314,9 @@ const Engine = {
         this.camera.x += (targetCamX - this.camera.x) * 0.08;
         this.camera.y += (targetCamY - this.camera.y) * 0.08;
 
-        // Camera clamps (only if not boss level for dramatic dynamic scrolling)
-        if (!this.boss) {
+        // Camera clamps (only if not boss level for dramatic dynamic scrolling, and not on mobile to prevent D-pad overlay)
+        const isMobile = document.getElementById('mobile-controls') && !document.getElementById('mobile-controls').classList.contains('hidden');
+        if (!this.boss && !isMobile) {
             const maxCamX = Math.max(0, this.currentLevel.width - 960);
             const maxCamY = Math.max(0, this.currentLevel.height - 540);
             this.camera.x = Math.max(0, Math.min(this.camera.x, maxCamX));

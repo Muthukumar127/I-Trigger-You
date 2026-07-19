@@ -422,7 +422,7 @@ const GameUI = {
                     <p class="credits-name">You survived all 50 levels of traps, trolls, and fakeouts, and cleared the secret glitched final challenge!</p>
                     <br>
                     <p class="credits-header">Credits</p>
-                    <p class="credits-name">Antigravity AI & Google Deepmind</p>
+                    <p class="credits-name">Leon Magic Studio & Muthukumar Game Developer</p>
                     <br>
                     <button class="menu-btn primary-btn" onclick="window.location.reload()" style="margin: 20px auto; display: block; width: 200px;">PLAY AGAIN</button>
                 `;
